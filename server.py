@@ -45,7 +45,6 @@ def main():
 
 def handle_dialog(res, req):
     user_id = req['session']['user_id']
-
     # если пользователь новый, то просим его представиться.
     if req['session']['new']:
         res['response']['text'] = 'Привет! Назови свое имя!'
@@ -80,6 +79,10 @@ def handle_dialog(res, req):
                     'hide': True
                 } for city in cities
             ]
+            res['response']['buttons'].append({
+                'title': 'Помощь',
+                'hide': True
+            })
     # если мы знакомы с пользователем и он нам что-то написал,
     # то это говорит о том, что он уже говорит о городе,
     # что хочет увидеть.
@@ -94,11 +97,43 @@ def handle_dialog(res, req):
             res['response']['card']['title'] = 'Этот город я знаю.'
             res['response']['card']['image_id'] = random.choice(cities[city])
             res['response']['text'] = 'Я угадал!'
+            res['response']['buttons'] = [
+                {
+                    'title': city.title(),
+                    'hide': True
+                } for city in cities
+            ]
+            res['response']['buttons'].append({
+                'title': 'Помощь',
+                'hide': True
+            })
         # если не нашел, то отвечает пользователю
         # 'Первый раз слышу об этом городе.'
+        elif req['request']['command'] == 'помощь':
+            res['response']['text'] = 'Справка по игре'
+            res['response']['buttons'] = [
+                {
+                    'title': city.title(),
+                    'hide': True
+                } for city in cities
+            ]
+            res['response']['buttons'].append({
+                'title': 'Помощь',
+                'hide': True
+            })
         else:
             res['response']['text'] = \
                 'Первый раз слышу об этом городе. Попробуй еще разок!'
+            res['response']['buttons'] = [
+                {
+                    'title': city.title(),
+                    'hide': True
+                } for city in cities
+            ]
+            res['response']['buttons'].append({
+                'title': 'Помощь',
+                'hide': True
+            })
 
 
 def get_city(req):
